@@ -6,11 +6,9 @@ using UnityEngine.UI;
 public class Reload : MonoBehaviour
 {
     [SerializeField] private Image atackButton;
-    private bool currentReload;
     void Update()
     {
-        currentReload = Player.instance.ReadyReload;
-        if (!currentReload)
+        if (Player.instance.IsRelaoding)
         {
             atackButton.fillAmount = Player.instance.DeltaReload;
         }

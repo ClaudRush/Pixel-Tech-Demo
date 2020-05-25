@@ -1586,6 +1586,7 @@ GameObject:
   - component: {fileID: 367334111}
   - component: {fileID: 367334110}
   - component: {fileID: 367334109}
+  - component: {fileID: 367334112}
   m_Layer: 5
   m_Name: Atack
   m_TagString: Untagged
@@ -1676,13 +1677,13 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_Sprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 0
+  m_Type: 3
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
   m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
+  m_FillClockwise: 0
+  m_FillOrigin: 2
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
 --- !u!222 &367334111
@@ -1693,6 +1694,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 367334107}
   m_CullTransparentMesh: 0
+--- !u!114 &367334112
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 367334107}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b0cc67df3f0ed34c9fbcdcb49e4b6b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  atackButton: {fileID: 367334110}
 --- !u!1 &423120792
 GameObject:
   m_ObjectHideFlags: 0

@@ -43,8 +43,8 @@ public class Player : MonoBehaviour
                 shootForse = value;
         }
     }
-    [SerializeField] private bool readyReload = true;
-    public bool ReadyReload => readyReload;
+    [SerializeField] private bool isRelaoding;
+    public bool IsRelaoding => isRelaoding;
     [SerializeField] private Health health;
     public Health Health => health;
 
@@ -183,7 +183,7 @@ public class Player : MonoBehaviour
     }
     private void Shooting()
     {
-        if (groundDetection.IsGrounded && readyReload)
+        if (groundDetection.IsGrounded && !isRelaoding)
         {
             animator.SetTrigger("Shoot");
             StartCoroutine(AnimationShoot());
@@ -191,7 +191,7 @@ public class Player : MonoBehaviour
     }
     public void CheckShoot()
     {
-        if (readyReload)
+        if (!isRelaoding)
         {
 
             currentArrow = GetArrowFromPool();
@@ -201,8 +201,6 @@ public class Player : MonoBehaviour
                 this,
                 areaAtackEnemy);
             StartCoroutine(Reload());
-
-            readyReload = false;
         }
 
     }
@@ -249,14 +247,21 @@ public class Player : MonoBehaviour
         stop = false;
         yield break;
     }
+    private IEnumerator StateDeltaReload()
+    {
+        while (isRelaoding)
+        {
+            yield return new WaitForEndOfFrame();
+            deltaReload += Time.deltaTime/2;
+        }
+        yield break;
+    }
     private IEnumerator Reload()
     {
+        isRelaoding = true;
+        StartCoroutine(StateDeltaReload());
         yield return new WaitForSeconds(2f);
-        readyReload = true;
-        while (readyReload)
-        {
-            deltaReload += Time.deltaTime;
-        }
+        isRelaoding = false;
         yield break;
     }
     private Arrow GetArrowFromPool()
