@@ -8440,6 +8440,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 405825814, guid: fa8fa66741051494a8cdf0e842edbbd9, type: 3}
+      propertyPath: m_Radius
+      value: 1.5
+      objectReference: {fileID: 0}
     - target: {fileID: 895468972096278517, guid: fa8fa66741051494a8cdf0e842edbbd9,
         type: 3}
       propertyPath: coinsText

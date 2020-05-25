@@ -10,17 +10,24 @@ public class Health : MonoBehaviour
     public int MaxHealth => maxHealth;
     [SerializeField] private int health;
     private Animator animator;
+    [SerializeField] private float damageForce;
     public int GetHealth => health;
     private void Start()
     {
         GameManager.instance.healthsContainer.Add(gameObject, this);
         animator = GetComponent<Animator>();
     }
-    public void TakeHit(int damage)
+    public void TakeHit(int damage, GameObject attacker)
     {
         health -= damage;
         //onHealthChange(health);
-        animator.SetTrigger("TakeDamage");
+        if (Player.instance != null)
+        {
+            Player.instance.IsBlockMovement = true;
+            Player.instance.Rb.AddForce(transform.position.x < attacker.transform.position.x ? 
+                new Vector2(-damageForce, 3) : new Vector2(damageForce, 3), ForceMode2D.Impulse);
+        }
+        animator.SetTrigger("TakeDamageTrigger");
         if (health <= 0)
         {
             Destroy(gameObject);

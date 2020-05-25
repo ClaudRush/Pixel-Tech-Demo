@@ -23,7 +23,7 @@ public class CollisionDamage : MonoBehaviour
     {
         if (health != null)
         {
-            health.TakeHit(damage);
+            health.TakeHit(damage, gameObject);
         }
         health = null;
     }

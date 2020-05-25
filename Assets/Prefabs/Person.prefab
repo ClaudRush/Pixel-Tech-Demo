@@ -261,10 +261,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d22cc564bde6194a825170b2db94694, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  deltaReload: 0
   speed: 4
   forse: 11
   shootForse: 3
-  readyReload: 1
+  isRelaoding: 0
   health: {fileID: 122689993}
   stop: 0
   isCheat: 1
@@ -277,6 +278,8 @@ MonoBehaviour:
   arrowSpawnPoint: {fileID: 2270227021425050208}
   buffReciever: {fileID: 4204881134273212448}
   triggerDamage: {fileID: 0}
+  damageBonus: 0
+  uiController: {fileID: 0}
   arrowCount: 3
 --- !u!114 &122689993
 MonoBehaviour:
@@ -292,6 +295,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 100
   health: 100
+  damageForce: 5
 --- !u!114 &895468972096278517
 MonoBehaviour:
   m_ObjectHideFlags: 0

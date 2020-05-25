@@ -55,6 +55,7 @@ public class Player : MonoBehaviour
     [SerializeField] private SpriteRenderer spriteRenderer;
     [SerializeField] private Animator animator;
     [SerializeField] private Rigidbody2D rb;
+    public Rigidbody2D Rb => rb;
     [SerializeField] private Arrow arrow;
     [SerializeField] private Transform arrowSpawnPoint;
     [SerializeField] private BuffReciever buffReciever;
@@ -78,6 +79,12 @@ public class Player : MonoBehaviour
     private Arrow currentArrow;
     private Vector3 direction;
     private bool isJumping;
+    private bool isBlockMovement;
+    public bool IsBlockMovement
+    {
+        get => isBlockMovement;
+        set => isBlockMovement = value;
+    }
 
     #region Singleton
     public static Player instance { get; private set; }
@@ -121,6 +128,11 @@ public class Player : MonoBehaviour
         animator.SetFloat("Speed", Mathf.Abs(direction.x));
         IsCheat();
     }
+    public void UnblockMovement()
+    {
+        isBlockMovement = false;
+        
+    }
     public void Move()
     {
         animator.SetBool("IsGrounded", groundDetection.IsGrounded);
@@ -151,7 +163,8 @@ public class Player : MonoBehaviour
 
         direction *= speed;
         direction.y = rb.velocity.y;
-        rb.velocity = direction;
+        if (!isBlockMovement)
+            rb.velocity = direction;
         if (direction.x < 0)
         {
             spriteRenderer.flipX = true;
