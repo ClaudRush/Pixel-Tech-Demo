@@ -6,6 +6,13 @@ using System;
 [RequireComponent(typeof(Animator))]
 public class Player : MonoBehaviour
 {
+    [SerializeField] private float deltaReload;
+    public float DeltaReload
+    {
+        get => deltaReload;
+        set => deltaReload = value;
+    }
+
     [SerializeField] private float speed = 4;
     public float Speed
     {
@@ -37,11 +44,7 @@ public class Player : MonoBehaviour
         }
     }
     [SerializeField] private bool readyReload = true;
-    public bool ReadyReload
-    {
-        get => readyReload;
-        set => readyReload = value;
-    }
+    public bool ReadyReload => readyReload;
     [SerializeField] private Health health;
     public Health Health => health;
 
@@ -57,7 +60,7 @@ public class Player : MonoBehaviour
     [SerializeField] private BuffReciever buffReciever;
     [SerializeField] private TriggerDamage triggerDamage;
     [SerializeField] private int damageBonus;
-
+    [SerializeField] private UICharacterController uiController;
     [SerializeField] private int arrowCount = 3;
     private List<Arrow> arrowsPool;
 
@@ -98,23 +101,27 @@ public class Player : MonoBehaviour
         buffReciever.OnBuffsChanged += Buffer;
     }
 
-    
-
-    void Update()
+    public void InitUIController(UICharacterController uiController)
     {
-        if (Input.GetKeyDown(KeyCode.Space) && groundDetection.IsGrounded)
-        {
-            rb.AddForce(Vector2.up * forse, ForceMode2D.Impulse);
-            animator.SetTrigger("StartJump");
-            isJumping = true;
-        }
-        if (Input.GetMouseButtonDown(0))
-        {
-            Shooting();
-        }
-    }
+        this.uiController = uiController;
+        this.uiController.Jump.onClick.AddListener(Jump);
+        this.uiController.Atack.onClick.AddListener(Shooting);
 
+    }
+    private void Update()
+    {
+#if UNITY_EDITOR
+        if (Input.GetKeyDown(KeyCode.Space))
+            Jump();
+#endif
+    }
     void FixedUpdate()
+    {
+        Move();
+        animator.SetFloat("Speed", Mathf.Abs(direction.x));
+        IsCheat();
+    }
+    public void Move()
     {
         animator.SetBool("IsGrounded", groundDetection.IsGrounded);
 
@@ -124,22 +131,27 @@ public class Player : MonoBehaviour
         }
 
         isJumping = isJumping && !groundDetection.IsGrounded;
-
+        direction = Vector3.zero;
+#if UNITY_EDITOR
         if (!stop)
         {
-            direction = Vector3.zero;
             if (Input.GetKey(KeyCode.A))
                 direction = Vector3.left;
             if (Input.GetKey(KeyCode.D))
+                direction = Vector3.right;
+        }
+#endif
+        if (!stop)
+        {
+            if (uiController.Left.IsPressed)
+                direction = Vector3.left;
+            if (uiController.Right.IsPressed)
                 direction = Vector3.right;
         }
 
         direction *= speed;
         direction.y = rb.velocity.y;
         rb.velocity = direction;
-
-        animator.SetFloat("Speed", Mathf.Abs(direction.x));
-
         if (direction.x < 0)
         {
             spriteRenderer.flipX = true;
@@ -148,8 +160,15 @@ public class Player : MonoBehaviour
         {
             spriteRenderer.flipX = false;
         }
-
-        IsCheat();
+    }
+    public void Jump()
+    {
+        if (groundDetection.IsGrounded)
+        {
+            rb.AddForce(Vector2.up * forse, ForceMode2D.Impulse);
+            animator.SetTrigger("StartJump");
+            isJumping = true;
+        }
     }
     private void IsCheat()
     {
@@ -162,7 +181,6 @@ public class Player : MonoBehaviour
             Destroy(gameObject);
         
     }
-
     private void Shooting()
     {
         if (groundDetection.IsGrounded && readyReload)
@@ -171,7 +189,7 @@ public class Player : MonoBehaviour
             StartCoroutine(AnimationShoot());
         }
     }
-    private void CheckShoot()
+    public void CheckShoot()
     {
         if (readyReload)
         {
@@ -207,7 +225,6 @@ public class Player : MonoBehaviour
             Forse += (int)buff.additiveBonus;
         }
     }
-
     private IEnumerator IsActivePotionDamage()
     {
         int a = 10;
@@ -236,9 +253,12 @@ public class Player : MonoBehaviour
     {
         yield return new WaitForSeconds(2f);
         readyReload = true;
+        while (readyReload)
+        {
+            deltaReload += Time.deltaTime;
+        }
         yield break;
     }
-
     private Arrow GetArrowFromPool()
     {
         if (arrowsPool.Count > 0)
@@ -252,7 +272,6 @@ public class Player : MonoBehaviour
         }
         return Instantiate(arrow, arrowSpawnPoint.position, Quaternion.identity);
     }
-
     public void ReturnArrowToPool(Arrow arrowTemp)
     {
         if (!arrowsPool.Contains(arrowTemp))

@@ -16,11 +16,6 @@ public class HealthBar : MonoBehaviour
         healthValue = health.GetHealth / (float)health.MaxHealth;
     }
 
-    private void OnDestroy()
-    {
-        //health.onHealthChange -= StartAnimationHealthBar;
-    }
-
     void Update()
     {
         currentHealth = health.GetHealth / (float)health.MaxHealth;
